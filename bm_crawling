@@ -1,57 +1,80 @@
 **using python
 
-import pyautogui 
-
 from selenium import webdriver
-from bs4 import BeautifulSoup as bs
-from selenium.webdriver.support.ui import Select 
+import xlrd
 from time import sleep 
-
-#options = webdriver.ChromeOptions()
-#options.add_argument('headless')
-
-path = './chromedriver' # 크롬한테 너를 제어할게...  
-driver = webdriver.Chrome(path)
-
-#Login process 
-driver.get("https://ceo.baemin.com/web/login?returnUrl=https%3A%2F%2Fceo.baemin.com%2F")
-sleep(1)
-
-username = driver.find_element_by_name("id") 
-username.send_key("idid")
-
-pwd = driver.find_element_by_name("password")
-pwd.send_keys("pwpw")
-
-btn = driver.find_element_by_xpath('//*[@id="btnLogin"]')
-btn.click()
-sleep(1)
-
-driver.get("https://ceo.baemin.com/myshop#stats")
-sleep(2)  
-
-
-# Calendar setting 
-nov = driver.find_element_by_xpath('//*[@id="from-date-calendar"]')
-nov.click()
-
-novdate = driver.find_element_by_xpath('//*[@id="from-date_table"]/tbody/tr[1]/td[6]/div')
-novdate.click()
-
-decdate = driver.find_element_by_xpath('//*[@id="to-date-calendar"]')
-decdate.click()
-
-nov2 = driver.find_element_by_xpath('//*[@id="to-date_root"]/div/div/div/div/div/div[3]')
-nov2.click()
-
-novdate2 = driver.find_element_by_xpath('//*[@id="to-date_table"]/tbody/tr[5]/td[7]/div')
-novdate2.click()
-sleep(1)
-
-check = driver.find_element_by_xpath('//*[@id="wrapper"]/div/div/main/section/div/form/div[3]/button')
-check.click()
-sleep(1)
+import os
 
 
 
+for i in range(1,4):
+    path = './chromedriver' # 크롬한테 너를 제어할게...  
+    driver = webdriver.Chrome(path)
+    
+    driver.get("https://ceo.baemin.com/web/login?returnUrl=https%3A%2F%2Fceo.baemin.com%2F")
+ 
+    wb = xlrd.open_workbook('test.xlsx')
+    sheet = wb.sheet_by_index(0)    
 
+    idinfo = sheet.cell(i,0).value
+    passwordinfo = sheet.cell(i,1).value 
+
+    id = str(idinfo)
+    pw = str(passwordinfo)
+
+
+    username = driver.find_element_by_name("id") 
+    username.send_keys(id)
+
+    pwd = driver.find_element_by_name("password")
+    pwd.send_keys(pw)
+
+    btn = driver.find_element_by_xpath('//*[@id="btnLogin"]')
+    btn.click()
+    sleep(3)
+
+    driver.get("https://ceo.baemin.com/myshop#stats")
+    sleep(2)  
+
+
+    # Calendar setting 
+    nov = driver.find_element_by_xpath('//*[@id="from-date-calendar"]')
+    nov.click()
+    sleep(1)
+
+    novdate = driver.find_element_by_xpath('//*[@id="from-date_table"]/tbody/tr[1]/td[6]/div')
+    novdate.click()
+    sleep(1)
+
+    decdate = driver.find_element_by_xpath('//*[@id="to-date-calendar"]')
+    decdate.click()
+    sleep(1)
+
+    nov2 = driver.find_element_by_xpath('//*[@id="to-date_root"]/div/div/div/div/div/div[3]')
+    nov2.click()
+    sleep(1)
+
+    novdate2 = driver.find_element_by_xpath('//*[@id="to-date_table"]/tbody/tr[5]/td[7]/div')
+    novdate2.click()
+    sleep(3)
+
+    #check = driver.find_element_by_xpath('//*[@id="wrapper"]/div/div/main/section/div/form/div[4]/button')
+    #check.click()
+    #sleep(3)
+
+
+
+    try: # try & except should be paired 
+        check = driver.find_element_by_xpath('//*[@id="wrapper"]/div/div/main/section/div/form/div[4]/button') 
+        check.click()
+        sleep(1)
+
+
+    except: 
+        check = driver.find_element_by_xpath('//*[@id="wrapper"]/div/div/main/section/div/form/div[3]/button')
+        check.click()
+
+    sleep(5)
+
+
+    driver.quit()
