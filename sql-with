@@ -1,0 +1,12 @@
+**using SQL for study
+
+With previous_query AS( 
+      select customer_id, 
+       count (subscription_id) AS 'subscription'
+from orders
+group by customer_id 
+)
+Select customers.customer_name, previous_query.subscriptions
+from previous_query
+join customers
+on previous_query.customer_id = customers.customer_id;
