@@ -1,0 +1,9 @@
+**using sql for study
+
+select count(distinct user_id) as 'enrollment', 
+    count(case when strftime("%m", cancel_date) ='03' then user_id end) as 'march_cancellations',
+    round(100.0*count(case when strftime("%m", cancel_date) ='03' then user_id end),
+    count(distinct user_id) as 'churn_rate' 
+from pro_users
+where signup_date < '2019-04-01' and cancel_date is null or cance_date >'2019-03-01';
+
