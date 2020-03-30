@@ -1,0 +1,149 @@
+### Using R 
+
+#Group assignment2 : Gender and Racial Bias in Perceptions of Others’ Pain 
+#A group of researchers at the University of Virginia investigated whether people 
+#estimate a different level of pain when the race (i.e., White, Black, Hispanic, or 
+#Asian) and gender (i.e., Female or Male) of a victim are varied. To test this idea, the 
+#researchers ran a randomized experiment (dataset: “tess.csv”). In this experiment, 
+#participants were first asked to report the amount of pain they would feel when 
+#they stub their toe on a chair leg (Q4: 0 Not painful to 10 Extremely painful; -1 
+#Refused). They were then randomly assigned to see only one of the following 24 
+#photos (XTESS089). That is, each participant saw a photo of a Black, Hispanic, Asian, 
+#or White target person of either gender. Following the treatment, participants were 
+#asked to estimate the amount of pain the target person would feel in the same 
+#situation above (Q8: 0 Not painful to 10 Extremely painful; -1 Refused). 
+
+
+
+
+#a. Test whether or not the collected sample is skewed in terms of participants’ 
+#political ideology (XIDEO: 1 Extremely liberal; 2 Liberal; 3 Slightly liberal; 4 
+#Moderate, middle of the road; 5 Slightly conservative; 6 Conservative; 7 Extremely 
+#conservative; -1 Refused).
+
+tess<-read.csv(file.choose(),header=TRUE)
+tess$XIDEO<-tess$XIDEO
+tess$XIDEO[tess$XIDEO==-1]<-NA
+t.units<-t.test(tess$XIDEO,mu=4,conf.level=0.95)
+t.units
+
+#H0: The collected sample is not skewed.
+#H1: The collected sample is skewed.
+
+#Based on the XIDEO, if the collected sample is not skewed, the mean should be 4. 
+#Thus, we used One-sample t-test to know p-value and it was 0.2438, which is bigger than 0.05
+#So, the null hypothesis is not rejected. 
+#Also, the mean of the collected sample (3.964136) belongs to 95% confidence interval, [3.903808,4.024464]/
+#It means that the mean can be estimated as 4, 95% sure.
+#The collected sample is not skewed in terms of participants' political ideology.
+
+
+
+#b. Test whether people’s self-reported pain differs from their estimation of others’ pain.
+
+tess<-read.csv(file.choose(),header=TRUE)
+tess$Q4<-tess$Q4
+tess$Q4[tess$Q4==-1]<-NA
+tess$Q8<-tess$Q8
+tess$Q8[tess$Q8==-1]<-NA
+t.test(tess$Q4,tess$Q8,paired=T)
+
+#H0: People's self-reported pain doesn't differ from their estimatio of other's pain
+#H1: People's self-reported pain differs from their estimation of other's pain.
+
+#Used Paried t-test to prove, t was 5.4409 and the p-value was 5.915e-08 which is smaller than 0.05.
+#so, the null hypothesis is rejected and the alternative hypothesis is accepted.
+###People's self-reported pain differs from their estimation of others' pain.
+
+
+
+#c. Test whether people estimate others’ pain differently depending on the gender of a victim.
+
+tess<-read.csv(file.choose(),header=TRUE)
+tess$gender<-tess$XTESS089
+tess$gender[tess$gender<=12]<-1
+tess$gender[tess$gender>=13]<-2
+tess$gender<-as.factor(tess$gender)
+tess$gender<-factor(tess$gender,levels=c(1,2),labels=c("male","female"))
+table(tess$gender,useNA="always")
+tess$Q8<-tess$Q8
+tess$Q8[tess$Q8==-1]<-NA
+table(tess$Q8,useNA="always")
+obj.aov<-aov(Q8~gender,data=tess)
+summary(obj.aov)
+
+#H0: People doesn't estimate other's pain differently depending on the gender of a victim
+#H1: People estimate other's pain differently depending on the gender of a victim
+
+#To test whether people estimate other's pain differently depending on the gender of a victim,
+#one-way ANOVA can be used. According to the test, F ratio was 19.56, and p-value was 1.02e-05.
+#As the p-value is smaller than 0.05, null hypothesis is rejected, and alternative hypothesis is accepted.
+#Therefore, means are different(It may vary depending on the conditions).
+
+#To compare the difference between two mean scores, Tukey's HSD test can be used. 
+#Difference between two mean of gender(male-female) groups was 0.4334762. 
+#Adjusted p-value was 1.02e-05. It is smaller than 0.05, null hypothesis is rejected, and alternative hypothesis is accepted,
+#As a result, there are difference between the mean of two groups.
+###people estimate other's pain differently depending on the gender of a victim.
+
+#d. Test whether people estimate others’ pain differently depending on the race of a victim
+
+tess<-read.csv(file.choose(),header=TRUE)
+tess$race<-tess$XTESS089
+tess$race[tess$race==1|tess$race==5|tess$race==9|tess$race==13|tess$race==17|tess$race==21]<-1
+tess$race[tess$race==2|tess$race==6|tess$race==10|tess$race==14|tess$race==18|tess$race==22]<-2
+tess$race[tess$race==3|tess$race==7|tess$race==11|tess$race==15|tess$race==19|tess$race==23]<-3
+tess$race[tess$race==4|tess$race==8|tess$race==12|tess$race==16|tess$race==20|tess$race==24]<-4
+tess$race<-factor(tess$race,levels=c(1,2,3,4),labels=c("White","Black","Hispanic","Asian"))
+table(tess$race,useNA="always")
+tess$Q8<-tess$Q8
+tess$Q8[tess$Q8==-1]<-NA
+table(tess$Q8,useNA="always")
+obj.aov<-aov(Q8~race,data=tess)
+summary(obj.aov)
+
+#H0: People doesn't estimate other's pain differently depending on the race of a victim
+#H1: People estimate other's pain differently depending on the race of a victim
+
+#	 To	 test	 whether	 people	 estimate	 other’s pain	 differently	 depending	 on	 the	 race	
+#of	 a	 victim,	 one-way	 ANOVA	 can	 be	 used.	 According	 to	 the	 test,	 F	 ratio	 was	 0.688,	
+#and	 p-value	 was	 0.559.	 As	 F	 ratio	 is	 not	 big	 enough,	 and	 p-value	 is	 bigger	 than	
+#0.05,	 null	 hypothesis	 get	 accepted.	 Means	 between	 groups	 are	 not	 different.
+#Even	 if	 Tukey’s HSD	 used,	 every	 adjusted	 p-value	 of	 each	 race	 groups	 are	 bigger	
+#than	 0.05.	 Null	 hypothesis	 get	 accepted.	 As	 a	 result,	 means	 between	 two	 groups	
+#are	 not	 different.
+###People	 doesn't	 estimate	 others’ pain	 differently	 depending	 on	 the	 race	 of	 a	
+victim
+
+
+
+#e. Test whether there is any interaction effect between the race and gender of a victim on people’s estimation 
+#of the pain the victim would feel.
+
+tess$gender<-tess$XTESS089
+tess$gender[tess$gender<=12]<-1
+tess$gender[tess$gender>=13]<-2
+tess$gender<-as.factor(tess$gender)
+tess$gender<-factor(tess$gender,levels=c(1,2),labels=c("male","female"))
+tess$race<-tess$XTESS089
+tess$race[tess$race==1|tess$race==5|tess$race==9|tess$race==13|tess$race==17|tess$race=
+=21]<-1
+tess$race[tess$race==2|tess$race==6|tess$race==10|tess$race==14|tess$race==18|tess$race
+==22]<-2
+tess$race[tess$race==3|tess$race==7|tess$race==11|tess$race==15|tess$race==19|tess$race
+==23]<-3
+tess$race[tess$race==4|tess$race==8|tess$race==12|tess$race==16|tess$race==20|tess$race
+==24]<-4
+tess$race<-as.factor(tess$race)
+tess$race<-factor(tess$race,levels=c(1,2,3,4),labels=c("White","Black","Hispanic","Asian"))
+obj.aov<-aov(Q8~gender+race+gender*race,data=tess)
+summary(obj.aov)
+
+#H0: There is not any interaction effect between the race and gender of a victim on people's estimation of the pain the victim would feel
+#H1: There is any interaction effect between the race and gender of a victim on people's estimation of the pain the victim would feel.
+
+#Based on these results, when people estimate other's pain depending on the race and gender of a victim,
+#the p-value is 0.457 which is bigger than 0.05, so we cannot reject the null hypothesis
+###There isn't any interaction effect between the race and gender of victim on people's estimation of the pain the victim would feel.
+
+
