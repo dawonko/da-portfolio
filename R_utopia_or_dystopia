@@ -1,0 +1,51 @@
+#Group Assignment1 : Internet: Utopia or Dystopia? 
+#A number of scholars have pointed to the Internet for its deleterious effects on 
+#human well-being, given that it can exacerbate loneliness, depression and social 
+#isolation. In contrast, others believe that the Internet can enhance the quality of life 
+#by precipitating the emergence of a new type of social aggregation. Using the data 
+#collected by the PEW research center (dataset: “pew.csv”), perform a chi-square test 
+#to see if Internet use (intuse: 1 Yes; 2 No; 8 Don’t know; 9 Refused) upgrades or 
+#downgrades the quality of life (q1: 1 Excellent; 2 Very good; 3 Good; 4 Fair; 5 Poor; 8 
+#Don’t know; 9 Refused). Do the data support the utopian or dystopian view about 
+#the Internet?
+
+
+pew<-read.csv(file.choose(),header=TRUE)
+pew$intuse<-pew$intuse
+pew$intuse[pew$intuse>=8]<-NA
+pew$q1<-pew$q1
+pew$q1[pewq1>=8]<-NA
+install.packages("descr")
+library(descr)
+pew$intuse<-factor(pew$intuse,levels=c(1,2),labels=("Yes","No"))
+pew$q1<-factor(pew$q1,levels=c(1,2,3,4,5),labels=c("Excellent","Very Good","Good","Fair","Poor"))
+CrossTable(pew$intuse,pew$q1,prop.r=T,prop.c=F,prop.t=F,expected=T,chisq=T)
+
+
+
+#1)p값이 0.05보다 작으므로 인터넷 사용과 삶의 질 사이에 관련성이 있는 것으로 나타났다.
+#2)인터넷 사용을 하는 경우에는 "Excellent","Very Good"에서 관측빈도>기대빈도이므로 
+3상관성이 높은 것을 알 수 있고 인터넷 사용을 하지 않는 경우에는 “Excellent","Very Good"에서 관측빈도<기대빈도이므로 
+#상관관계가 낮음을 알 수 있다. 그러므로 인터넷사용에 대해 유토피아적인 관점을 취하고 있음을 알 수 있다. 
+
+#First of all, we should think about the dependence between Quality of Life(QOL) and Internet use(IU) before thinking about further Ideas.
+
+#H0: Quality of Life is independet of the internet use 
+#H1: Quality of Life is not independent of the internet use
+
+#Chi-square test is used to check dependence, p-value is 2e-16 which is smaller than 0.05.
+#So the null hypothesis(H0) is rejected and alternative hypothesis is accepted.
+#QL is not independent of the IU.
+
+#And we compared the observed and expected frequencies to obtain an idea about the dependence between QL and IU.
+#We see that Internet Users have higher observed than expected frequencies for both "Excellent" and "very Good", 
+#whereas, No internet users have a higher observed than expected frequencies for "Good", "fair, and "Poor".
+#Even though it has higher observed frquency of "Good", the difference between observed and expected frequencies of "Fair"
+#and "Poor" are biiger than "Good" one. It means it is related to "Fair" and "Poor" more.
+#These observations give give us insight about the QL difference between Internet users and No Internet users.
+# Therefore, the data support the utopian view about the Internet.
+
+
+
+
+
