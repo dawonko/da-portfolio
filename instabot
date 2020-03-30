@@ -1,0 +1,58 @@
+from selenium import webdriver
+from time import sleep 
+
+path = './chromedriver' # 크롬한테 너를 제어할게...  
+driver = webdriver.Chrome(path)
+
+driver.get("https://www.instagram.com/accounts/login/?source=auth_switcher")
+sleep(3)
+
+username = driver.find_element_by_name("username") 
+username.send_keys("sldkflsdf")
+
+pwd = driver.find_element_by_name("password")
+pwd.send_keys("sdflksfksd")
+
+btn = driver.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/div[1]/div/form/div[4]/button')
+btn.click()
+
+sleep(5)
+
+driver.get("https://www.instagram.com/explore/tags/%EA%B3%A0%EC%96%91%EC%9D%B4/")
+sleep(5)
+
+post_list=""
+
+try: # try & except should be paired 
+    post_list = driver.find_elements_by_xpath('//*[@id="react-root"]/section/main/article/div[1]/div/div/div[3]') 
+
+except: 
+    post_list = driver.find_elements_by_xpath('//*[@id="react-root"]/section/main/article/div[1]/div/div/div[3]')
+
+
+for post in post_list:
+    post.click()
+    sleep(5)
+
+    like = driver.find_element_by_xpath('/html/body/div[3]/div[2]/div/article/div[2]/section[1]/span[1]/button/span')
+    like.click()
+sleep(5)
+
+
+follow = driver.find_element_by_xpath('/html/body/div[4]/div[2]/div/article/header/div[2]/div[1]/div[2]/a/button')
+follow.click 
+
+sleep(5)
+
+try: 
+    close = driver.find_element_by_xpath('/html/body/div[4]/button[1]')
+    close.click 
+
+except:
+    close = driver.find_element_by_xpath('/html/body/div[3]/button[1]')
+    close.click 
+    
+
+sleep(5)
+
+driver.quit() 
